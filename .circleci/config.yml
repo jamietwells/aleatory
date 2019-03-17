@@ -7,7 +7,7 @@ jobs:
       - checkout
       - run: find .
       - run: dotnet restore
-      - run: dotnet build --configuration Release
-      - run: dotnet pack Aleatory.Library/Aleatory.Library.csproj --version-suffix ${CIRCLE_BUILD_NUM}
+      - run: dotnet build
       - run: dotnet test --no-build
+      - run: dotnet pack Aleatory.Library/Aleatory.Library.csproj --version-suffix ${CIRCLE_BUILD_NUM} --configuration Release
       - run: dotnet nuget push Aleatory.Library/bin/Release/*.nupkg -k ${NugetApiKey} -s https://api.nuget.org/v3/index.json
