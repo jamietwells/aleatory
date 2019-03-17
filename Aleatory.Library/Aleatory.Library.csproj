@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <RootNamespace>Aleatory</RootNamespace>
     <PackageVersion>1.0.0$(JobId)</PackageVersion>
     <PackageId>Aleatory</PackageId>
     <Title>Aleatory</Title>
