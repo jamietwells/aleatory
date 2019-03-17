@@ -2,6 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageVersion>1.0</PackageVersion>
+    <PackageId>Aleatory</PackageId>
+    <Title>Aleatory</Title>
+    <Authors>jamietwells</Authors>
+    <PackageDescription>A package to help create random data for unit tests</PackageDescription>
+    <PackageTags>DataGeneration;Random;Test</PackageTags>
+    <RepositoryUrl>https://github.com/jamietwells/aleatory</RepositoryUrl>
   </PropertyGroup>
 
 </Project>
