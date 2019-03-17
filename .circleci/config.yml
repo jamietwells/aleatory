@@ -2,15 +2,10 @@ version: 2
 jobs:
   build:
     docker:
-      - image: debian:stretch
-
+      - image: microsoft/aspnetcore-build:2.0
     steps:
       - checkout
-
-      - run:
-          name: Greeting
-          command: echo Hello, world.
-
-      - run:
-          name: Print the Current Time
-          command: date
+      - run: find .
+      - run: dotnet restore
+      - run: dotnet build
+      - run: dotnet test --no-build
