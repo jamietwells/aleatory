@@ -1,0 +1,1 @@
+This package is published to NuGet: https://www.nuget.org/packages/Aleatory
