@@ -5,7 +5,7 @@ namespace Aleatory
 {
     public class IntegerGenerator
     {
-        private Random _random;
+        private readonly Random _random;
         private readonly int _lowerBound;
         private readonly int _upperBound;
         private readonly bool _inclusiveLower;
@@ -45,7 +45,6 @@ namespace Aleatory
         {
             while (true)
                 yield return Single();
-
         }
     }
 }

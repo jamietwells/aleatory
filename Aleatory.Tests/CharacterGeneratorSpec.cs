@@ -8,31 +8,31 @@ using Xunit.Sdk;
 
 namespace Aleatory.Tests
 {
-    public class IntegerGeneratorSpec
+    public class CharacterGeneratorSpec
     {
-        private readonly IntegerGenerator _generator;
+        private readonly CharacterGenerator _generator;
 
-        public IntegerGeneratorSpec()
+        public CharacterGeneratorSpec()
         {
             _generator = new DataGenerators(new Random(12345))
-                .IntegerGenerator();
+                .CharacterGenerator();
         }
 
         [Fact]
         public void CanGenerateSingleValue()
         {
-            var min = 1;
-            var max = 10;
+            var min = 'a';
+            var max = 'z';
 
             var gen = _generator
                 .Between(min, max);
 
-            var nums = Enumerable.Repeat<Func<int>>(gen.Single, 10000)
+            var chars = Enumerable.Repeat<Func<char>>(gen.Single, 10000)
                 .Select(func => func())
                 .ToArray();
 
-            nums.Count().Should().Be(10000);
-            nums.Distinct().Should().BeEquivalentTo(Enumerable.Range(min, max - 1));
+            chars.Count().Should().Be(10000);
+            chars.Distinct().Should().BeEquivalentTo(Enumerable.Range(min, (max - min)).Select(Convert.ToChar));
         }
 
         [Fact]
@@ -40,33 +40,35 @@ namespace Aleatory.Tests
         {
             var count = new Random().Next(100, 200);
 
-            var numbers = _generator
-                .Between(1, 10)
+            var chars = _generator
+                .Between('a', 'z')
                 .Many()
                 .Take(count);
 
-            numbers.Should().HaveCount(count);
+            chars.Should().HaveCount(count);
         }
 
         [Fact]
         public void ValuesWillGenerateBetweenTheSpecifiedValues()
         {
-            var max = new Random().Next(10, 20);
+            var min = (char)new Random().Next('a', 'm');
+            var max = (char)new Random().Next('n', 'z');
+            
             var numbers = _generator
-                .Between(1, max)
+                .Between(min, max)
                 .Many()
                 .Take(10000)
                 .Distinct();
 
-            numbers.Should().HaveCountLessThan(max);
+            numbers.Should().HaveCountLessOrEqualTo(max - min);
         }
 
         [Fact]
         public void InclusiveLower_Includes_LowerBound()
         {
-            var min = new Random().Next(1, 10);
+            var min = (char)new Random().Next(1, 10);
             var numbers = _generator
-                .Between(min, 20)
+                .Between(min, (char)20)
                 .InclusiveLower()
                 .Many()
                 .Take(10000);
@@ -77,9 +79,9 @@ namespace Aleatory.Tests
         [Fact]
         public void InclusiveUpper_Includes_UpperBound()
         {
-            var max = new Random().Next(10, 20);
+            var max = (char)new Random().Next(10, 20);
             var numbers = _generator
-                .Between(1, max)
+                .Between((char)1, max)
                 .InclusiveUpper()
                 .Many()
                 .Take(10000);
@@ -90,9 +92,9 @@ namespace Aleatory.Tests
         [Fact]
         public void ExclusiveLower_DoesNotInclude_LowerBound()
         {
-            var min = new Random().Next(1, 10);
+            var min = (char)new Random().Next(1, 10);
             var numbers = _generator
-                .Between(min, 20)
+                .Between(min, (char)20)
                 .ExclusiveLower()
                 .Many()
                 .Take(10000);
@@ -103,9 +105,9 @@ namespace Aleatory.Tests
         [Fact]
         public void ExclusiveUpper_DoesNotInclude_UpperBound()
         {
-            var max = new Random().Next(10, 20);
+            var max = (char)new Random().Next(10, 20);
             var numbers = _generator
-                .Between(1, max)
+                .Between((char)1, max)
                 .ExclusiveUpper()
                 .Many()
                 .Take(10000);
