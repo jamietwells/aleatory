@@ -54,65 +54,65 @@ namespace Aleatory.Tests
             var min = (char)new Random().Next('a', 'm');
             var max = (char)new Random().Next('n', 'z');
             
-            var numbers = _generator
+            var characters = _generator
                 .Between(min, max)
                 .Many()
                 .Take(10000)
                 .Distinct();
 
-            numbers.Should().HaveCountLessOrEqualTo(max - min);
+            characters.Should().HaveCountLessOrEqualTo(max - min);
         }
 
         [Fact]
         public void InclusiveLower_Includes_LowerBound()
         {
             var min = (char)new Random().Next(1, 10);
-            var numbers = _generator
+            var characters = _generator
                 .Between(min, (char)20)
                 .InclusiveLower()
                 .Many()
                 .Take(10000);
 
-            numbers.Should().Contain(min);
+            characters.Should().Contain(min);
         }
 
         [Fact]
         public void InclusiveUpper_Includes_UpperBound()
         {
             var max = (char)new Random().Next(10, 20);
-            var numbers = _generator
+            var characters = _generator
                 .Between((char)1, max)
                 .InclusiveUpper()
                 .Many()
                 .Take(10000);
 
-            numbers.Should().Contain(max);
+            characters.Should().Contain(max);
         }
 
         [Fact]
         public void ExclusiveLower_DoesNotInclude_LowerBound()
         {
             var min = (char)new Random().Next(1, 10);
-            var numbers = _generator
+            var characters = _generator
                 .Between(min, (char)20)
                 .ExclusiveLower()
                 .Many()
                 .Take(10000);
 
-            numbers.Should().NotContain(min);
+            characters.Should().NotContain(min);
         }
 
         [Fact]
         public void ExclusiveUpper_DoesNotInclude_UpperBound()
         {
             var max = (char)new Random().Next(10, 20);
-            var numbers = _generator
+            var characters = _generator
                 .Between((char)1, max)
                 .ExclusiveUpper()
                 .Many()
                 .Take(10000);
 
-            numbers.Should().NotContain(max);
+            characters.Should().NotContain(max);
         }
     }
 }

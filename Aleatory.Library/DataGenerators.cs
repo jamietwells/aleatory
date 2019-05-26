@@ -14,5 +14,7 @@ namespace Aleatory
         public IntegerGenerator IntegerGenerator() => new IntegerGenerator(_random);
         
         public CharacterGenerator CharacterGenerator() => new CharacterGenerator(IntegerGenerator());
+
+        public StringGenerator StringGenerator() => new StringGenerator(CharacterGenerator(), IntegerGenerator());
     }
 }
