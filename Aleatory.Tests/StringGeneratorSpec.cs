@@ -45,6 +45,24 @@ namespace Aleatory.Tests
         }
 
         [Fact]
+        public void StringContainsRandomCharacters()
+        {
+            var min = 'a';
+            var max = 'z';
+
+            var minLength = 1000;
+            var maxLengh = 10000;
+
+            var gen = _generator
+                .CharactersBetween(min, max)
+                .LengthBetween(minLength, maxLengh);
+
+            var value = gen.Single();
+
+            value.Distinct().Should().BeEquivalentTo(Enumerable.Range(min, max - min).Select(c => (char)c));
+        }
+
+        [Fact]
         public void CanTakeManyValues()
         {
             var count = new Random().Next(100, 200);

@@ -46,7 +46,7 @@ namespace Aleatory
             new StringGenerator(_characterGenerator.ExclusiveUpper(), _integerGenerator);
 
         public string Single() =>
-            new string(Enumerable.Repeat(_characterGenerator.Single(), _integerGenerator.Single()).ToArray());
+            new string(Enumerable.Repeat<Func<char>>(_characterGenerator.Single, _integerGenerator.Single()).Select(f => f()).ToArray());
 
         public IEnumerable<string> Many() {
             while(true)
