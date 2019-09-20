@@ -1,10 +1,7 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using FluentAssertions;
 using Xunit;
-using Xunit.Sdk;
 
 namespace Aleatory.Tests
 {
@@ -29,7 +26,9 @@ namespace Aleatory.Tests
             var maxLengh = 100;
 
             var gen = _generator
+                .AddCharacterGroup()
                 .CharactersBetween(min, max)
+                .CompleteGroup()
                 .LengthBetween(minLength, maxLengh);
 
             var strings = Enumerable.Repeat<Func<string>>(gen.Single, 10000)
@@ -47,19 +46,27 @@ namespace Aleatory.Tests
         [Fact]
         public void StringContainsRandomCharacters()
         {
-            var min = 'a';
-            var max = 'z';
+            var ranges = new (char Min, char Max)[] { ('a', 'd'), ('g', 'n'), ('q', 'y'), ('A', 'G'), ('K', 'U') };
 
             var minLength = 1000;
             var maxLengh = 10000;
 
-            var gen = _generator
-                .CharactersBetween(min, max)
+            var gen = _generator;
+
+            foreach (var range in ranges)
+            {
+                gen = gen
+                    .AddCharacterGroup()
+                    .CharactersBetween(range.Min, range.Max)
+                    .CompleteGroup();
+            }
+
+            gen = gen
                 .LengthBetween(minLength, maxLengh);
 
             var value = gen.Single();
 
-            value.Distinct().Should().BeEquivalentTo(Enumerable.Range(min, max - min).Select(c => (char)c));
+            value.Distinct().Should().BeEquivalentTo(ranges.SelectMany(r => Enumerable.Range(r.Min, r.Max - r.Min).Select(c => (char)c)));
         }
 
         [Fact]
@@ -68,7 +75,9 @@ namespace Aleatory.Tests
             var count = new Random().Next(100, 200);
 
             var chars = _generator
+                .AddCharacterGroup()
                 .CharactersBetween('a', 'z')
+                .CompleteGroup()
                 .Many()
                 .Take(count);
 
@@ -80,9 +89,11 @@ namespace Aleatory.Tests
         {
             var min = (char)new Random().Next('a', 'm');
             var max = (char)new Random().Next('n', 'z');
-            
+
             var strings = _generator
+                .AddCharacterGroup()
                 .CharactersBetween(min, max)
+                .CompleteGroup()
                 .Many()
                 .Take(10000)
                 .Distinct();
@@ -95,8 +106,10 @@ namespace Aleatory.Tests
         {
             var min = (char)new Random().Next(1, 10);
             var strings = _generator
+                .AddCharacterGroup()
                 .CharactersBetween(min, (char)20)
                 .CharactersInclusiveLower()
+                .CompleteGroup()
                 .Many()
                 .Take(10000);
 
@@ -108,8 +121,10 @@ namespace Aleatory.Tests
         {
             var max = (char)new Random().Next(10, 20);
             var strings = _generator
+                .AddCharacterGroup()
                 .CharactersBetween((char)1, max)
                 .CharactersInclusiveUpper()
+                .CompleteGroup()
                 .Many()
                 .Take(10000);
 
@@ -121,8 +136,10 @@ namespace Aleatory.Tests
         {
             var min = (char)new Random().Next(1, 10);
             var strings = _generator
+                .AddCharacterGroup()
                 .CharactersBetween(min, (char)20)
                 .CharactersExclusiveLower()
+                .CompleteGroup()
                 .Many()
                 .Take(10000);
 
@@ -134,15 +151,17 @@ namespace Aleatory.Tests
         {
             var max = (char)new Random().Next(10, 20);
             var strings = _generator
+                .AddCharacterGroup()
                 .CharactersBetween((char)1, max)
                 .CharactersExclusiveUpper()
+                .CompleteGroup()
                 .Many()
                 .Take(10000);
 
             strings.SelectMany(s => s.ToCharArray()).Should().NotContain(max);
         }
 
-                [Fact]
+        [Fact]
         public void LengthInclusiveLower_Includes_LowerBound()
         {
             var min = (char)new Random().Next(1, 10);
