@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using Xunit;
@@ -8,12 +9,15 @@ namespace Aleatory.Tests
     public class StringGeneratorSpec
     {
         private readonly StringGenerator _generator;
+        private readonly Random _random;
 
         public StringGeneratorSpec()
         {
             _generator = new DataGenerators(new Random(12345))
                 .StringGenerator()
                 .LengthBetween(10, 100);
+
+            _random = new Random();
         }
 
         [Fact]
@@ -70,9 +74,43 @@ namespace Aleatory.Tests
         }
 
         [Fact]
+        public void CharacterGroupsChosenRandomly()
+        {
+            var ranges = new (char Min, char Max)[] { ('a', 'd'), ('g', 'n'), ('q', 'y'), ('A', 'G'), ('K', 'U') };
+
+            var minLength = 10;
+            var maxLengh = 100;
+
+            var gen = _generator;
+
+            foreach (var range in ranges)
+            {
+                gen = gen
+                    .AddCharacterGroup()
+                    .CharactersBetween(range.Min, range.Max)
+                    .CompleteGroup();
+            }
+
+            gen = gen
+                .LengthBetween(minLength, maxLengh);
+
+
+            var strings = Enumerable.Range(0, 1000)
+                .Select(_ => gen.Single());
+
+            var position = _random.Next(0, minLength);
+
+            var set = new HashSet<char>(strings.Select(s => s[position]));
+            var rangeGroups = ranges.Select(r => Enumerable.Range(r.Min, r.Max - r.Min).Select(c => (char)c));
+
+            foreach(var range in rangeGroups)
+                set.Should().IntersectWith(range);
+        }
+
+        [Fact]
         public void CanTakeManyValues()
         {
-            var count = new Random().Next(100, 200);
+            var count = _random.Next(100, 200);
 
             var chars = _generator
                 .AddCharacterGroup()
@@ -87,8 +125,8 @@ namespace Aleatory.Tests
         [Fact]
         public void ValuesWillGenerateBetweenTheSpecifiedValues()
         {
-            var min = (char)new Random().Next('a', 'm');
-            var max = (char)new Random().Next('n', 'z');
+            var min = (char)_random.Next('a', 'm');
+            var max = (char)_random.Next('n', 'z');
 
             var strings = _generator
                 .AddCharacterGroup()
@@ -104,7 +142,7 @@ namespace Aleatory.Tests
         [Fact]
         public void InclusiveLower_Includes_LowerBound()
         {
-            var min = (char)new Random().Next(1, 10);
+            var min = (char)_random.Next(1, 10);
             var strings = _generator
                 .AddCharacterGroup()
                 .CharactersBetween(min, (char)20)
@@ -119,7 +157,7 @@ namespace Aleatory.Tests
         [Fact]
         public void InclusiveUpper_Includes_UpperBound()
         {
-            var max = (char)new Random().Next(10, 20);
+            var max = (char)_random.Next(10, 20);
             var strings = _generator
                 .AddCharacterGroup()
                 .CharactersBetween((char)1, max)
@@ -134,7 +172,7 @@ namespace Aleatory.Tests
         [Fact]
         public void ExclusiveLower_DoesNotInclude_LowerBound()
         {
-            var min = (char)new Random().Next(1, 10);
+            var min = (char)_random.Next(1, 10);
             var strings = _generator
                 .AddCharacterGroup()
                 .CharactersBetween(min, (char)20)
@@ -149,7 +187,7 @@ namespace Aleatory.Tests
         [Fact]
         public void ExclusiveUpper_DoesNotInclude_UpperBound()
         {
-            var max = (char)new Random().Next(10, 20);
+            var max = (char)_random.Next(10, 20);
             var strings = _generator
                 .AddCharacterGroup()
                 .CharactersBetween((char)1, max)
@@ -164,7 +202,7 @@ namespace Aleatory.Tests
         [Fact]
         public void LengthInclusiveLower_Includes_LowerBound()
         {
-            var min = (char)new Random().Next(1, 10);
+            var min = (char)_random.Next(1, 10);
             var strings = _generator
                 .LengthBetween(min, (char)20)
                 .LengthInclusiveLower()
@@ -177,7 +215,7 @@ namespace Aleatory.Tests
         [Fact]
         public void LengthInclusiveUpper_Includes_UpperBound()
         {
-            var max = (char)new Random().Next(10, 20);
+            var max = (char)_random.Next(10, 20);
             var strings = _generator
                 .LengthBetween((char)1, max)
                 .LengthInclusiveUpper()
@@ -190,7 +228,7 @@ namespace Aleatory.Tests
         [Fact]
         public void LengthExclusiveLower_DoesNotInclude_LowerBound()
         {
-            var min = (char)new Random().Next(1, 10);
+            var min = (char)_random.Next(1, 10);
             var strings = _generator
                 .LengthBetween(min, (char)20)
                 .LengthExclusiveLower()
@@ -203,7 +241,7 @@ namespace Aleatory.Tests
         [Fact]
         public void LengthExclusiveUpper_DoesNotInclude_UpperBound()
         {
-            var max = (char)new Random().Next(10, 20);
+            var max = (char)_random.Next(10, 20);
             var strings = _generator
                 .LengthBetween((char)1, max)
                 .LengthExclusiveUpper()
