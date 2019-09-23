@@ -10,6 +10,8 @@
     <PackageDescription>A package to help create random data for unit tests</PackageDescription>
     <PackageTags>DataGeneration;Random;Test</PackageTags>
     <RepositoryUrl>https://github.com/jamietwells/aleatory</RepositoryUrl>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
 </Project>
